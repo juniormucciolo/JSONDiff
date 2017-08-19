@@ -7,11 +7,11 @@ namespace JsonDiff.Service
 {
     public class DiffHandler
     {
-    /// <summary>
-    /// Process both side and find the differences.
-    /// </summary>
-    /// <param name="jsonById">Json object that contains two Json sides</param>
-    /// <returns>Array of differences from two json.</returns>
+        /// <summary>
+        /// Process both side and find the differences.
+        /// </summary>
+        /// <param name="jsonById">Json object that contains two Json sides</param>
+        /// <returns>Array of differences from two json.</returns>
         public JsonResult ProcessDiff(Json jsonById)
         {
             var diffList = new List<string>();
@@ -58,7 +58,7 @@ namespace JsonDiff.Service
                 differences = diffList,
                 id = jsonById.JsonId
             };
-            
+
             return jsonResult;
         }
     }
