@@ -7,7 +7,7 @@ using JsonDiff.Models;
 using JsonDiff.Repository;
 using JsonDiff.Service;
 
-namespace JsonDiff.Controllers
+namespace JsonDiff.Controllers.v1
 {
     [RoutePrefix("v1")]
     public class DiffController : ApiController

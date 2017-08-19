@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 using System.Web.Http;
-using JsonDiff.Controllers;
+using JsonDiff.Controllers.v1;
 using JsonDiff.Models;
 using JsonDiff.Repository;
 using Moq;
