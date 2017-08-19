@@ -24,7 +24,7 @@ JsonDiff is a WEB API that can show differences between two JSON encoded as base
 
 ![N|Solid](http://i.imgur.com/RmZ7hpN.png)
 * Removed repository from data report as all call are mocked using MOQ;
-* Report extract using dotCover.
+* Report extracted using dotCover.
 
 
 ### Exposed endpoints:
