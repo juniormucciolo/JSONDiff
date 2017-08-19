@@ -50,7 +50,6 @@ namespace JsonDiff.Controllers.v1
             try
             {
                 encoder.DeserializeJson(json);
-                encoder.Decode(json);
                 repository.SaveJson(id, json, Side.Right);
             }
             catch (Exception e)
@@ -74,7 +73,6 @@ namespace JsonDiff.Controllers.v1
             try
             {
                 encoder.DeserializeJson(json);
-                encoder.Decode(json);
                 repository.SaveJson(id, json, Side.Left);
             }
             catch (Exception e)
@@ -100,7 +98,7 @@ namespace JsonDiff.Controllers.v1
             }
 
             var jsonById = repository.GetById(id);
-
+            
             if (jsonById.Left == null || jsonById.Right == null)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Error message: Left and Right side are required to peform diff");
