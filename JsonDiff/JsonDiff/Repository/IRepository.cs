@@ -1,4 +1,5 @@
-﻿using JsonDiff.Models;
+﻿using System.Threading.Tasks;
+using JsonDiff.Models;
 
 namespace JsonDiff.Repository
 {
@@ -6,7 +7,7 @@ namespace JsonDiff.Repository
     {
         Json GetById(string id);
         bool AddOrUpdate(Json obj);
-        void SaveJson(string id, string json, Side side);
-        void Save();
+        Task SaveJsonAsync(string id, string json, Side side);
+        Task SaveAsync();
     }
 }

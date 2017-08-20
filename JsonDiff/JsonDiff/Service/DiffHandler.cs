@@ -17,22 +17,24 @@ namespace JsonDiff.Service
             var diffList = new List<string>();
             var decoder = new EncodeHandler();
             var counter = 0;
+            var message = "";
 
             // Gets both side json.
             var leftSide = decoder.DeserializeJson(jsonById.Left);
             var righSide = decoder.DeserializeJson(jsonById.Right);
+
             // Get boolean variables for equality and size.
             var isJsonLenghEqual = leftSide.Count == righSide.Count;
             var isJsonValuesEquals = JToken.DeepEquals(leftSide, righSide);
 
             if (!isJsonLenghEqual)
             {
-                diffList.Add("Json lenght is not equal.");
+                message = "Json lenght is not equal.";
             }
 
             if (isJsonValuesEquals && isJsonLenghEqual)
             {
-                diffList.Add("Objects are same");
+                message = "Objects are same";
             }
 
             // Check json side against each other.
@@ -50,11 +52,13 @@ namespace JsonDiff.Service
                         counter += 1;
                     }
                 }
+
+                message = $"Found {counter} differences between jsons";
             }
 
             var jsonResult = new JsonResult
             {
-                message = $"Found {counter} differences between jsons",
+                message = message,
                 differences = diffList,
                 id = jsonById.JsonId
             };

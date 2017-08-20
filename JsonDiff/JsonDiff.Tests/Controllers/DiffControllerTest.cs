@@ -7,6 +7,8 @@ using Moq;
 using NUnit.Framework;
 using Assert = NUnit.Framework.Assert;
 using System.Net;
+using System.Threading.Tasks;
+using System.Web.Http.Results;
 
 namespace JsonDiff.Tests.Controllers
 {
@@ -20,127 +22,132 @@ namespace JsonDiff.Tests.Controllers
         private readonly string invalidJsonFormat = "ew0KICAiX2lkIjogIjU5OTRjNTc5ZWIyNWY0NzYyYjNkMzhkNiINCiAgImluZGV4IjogW10sDQp9";
 
         [Test]
-        public void Should_Get_Bad_Request_When_Put_Left_Json_Invalid_Format()
+        public async Task Should_Get_Bad_Request_When_Put_Left_Json_Invalid_Format()
         {
             // Arrange
             var controller = DiffController(new Json());
             // Act
-            var response = controller.LeftJson(jsonId, invalidJsonFormat);
+            var response = await controller.LeftJson(jsonId, invalidJsonFormat);
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOf<BadRequestResult>(response);
         }
 
         [Test]
-        public void Should_Get_Bad_Request_When_Put_Right_Json_Invalid_Format()
+        public async Task Should_Get_Bad_Request_When_Put_Right_Json_Invalid_Format()
         {
             // Arrange
             var controller = DiffController(new Json());
             // Act
-            var response = controller.RightJson(jsonId, invalidJsonFormat);
+            var response = await controller.RightJson(jsonId, invalidJsonFormat);
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOf<BadRequestResult>(response);
         }
 
         [Test]
-        public void Should_Put_Left_Json_Encoded_64()
+        public async Task Should_Put_Left_Json_Encoded_64()
         {
             // Arrange
             var controller = DiffController(new Json());
             // Act
-            var response = controller.LeftJson(jsonId, leftSideJsonEncoded);
+            var response = (OkNegotiatedContentResult<ResponseBase>) await controller.LeftJson(jsonId, leftSideJsonEncoded);
             // Assert
-            Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<ResponseBase>>(response);
+            Assert.AreEqual("Left json stored sucessfully.", response.Content.Message);
+            Assert.AreEqual(true, response.Content.Success);
         }
 
         [Test]
-        public void Should_Put_Right_Json_Encoded_64()
+        public async Task Should_Put_Right_Json_Encoded_64()
         {
             // Arrange
             var controller = DiffController(new Json());
             // Act
-            var response = controller.RightJson(jsonId, rightSideJsonEncoded);
+            var response = (OkNegotiatedContentResult<ResponseBase>) await controller.RightJson(jsonId, rightSideJsonEncoded);
             // Assert
-            Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<ResponseBase>>(response);
+            Assert.AreEqual("Right json stored sucessfully.", response.Content.Message);
+            Assert.AreEqual(true, response.Content.Success);
         }
 
         [Test]
-        public void Should_Not_Be_Able_To_Put_Right_Uncoded_Json()
+        public async Task Should_Not_Be_Able_To_Put_Right_Uncoded_Json()
         {
             // Arrange
             var controller = DiffController(new Json());
             // Act
-            var response = controller.RightJson(jsonId, wrongEncodedString);
+            var response = await controller.RightJson(jsonId, wrongEncodedString);
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOf<BadRequestResult>(response);
         }
 
         [Test]
-        public void Should_Not_Be_Able_To_Put_Left_Uncoded_Json()
+        public async Task Should_Not_Be_Able_To_Put_Left_Uncoded_Json()
         {
             // Arrange
             var controller = DiffController(new Json());
             // Act
-            var response = controller.LeftJson(jsonId, wrongEncodedString);
+            var response = await controller.LeftJson(jsonId, wrongEncodedString);
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOf<BadRequestResult>(response);
         }
 
         [Test]
-        public void Should_Get_Bad_Request_When_Empty_Left_Json()
+        public async Task Should_Get_Bad_Request_When_Empty_Left_Json()
         {
             // Arrange
             var controller = DiffController(new Json() { Id = 1, Left = null, Right = rightSideJsonEncoded, JsonId = jsonId });
             // Act
-            var response = controller.LeftJson(jsonId, null);
+            var response = await controller.LeftJson(jsonId, null);
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOf<BadRequestResult>(response);
         }
 
         [Test]
-        public void Should_Get_Bad_Request_When_Empty_Right_Json()
+        public async Task Should_Get_Bad_Request_When_Empty_Right_Json()
         {
             // Arrange
             var controller = DiffController(new Json() { Id = 1, Left = leftSideJsonEncoded, Right = null, JsonId = jsonId });
             // Act
-            var response = controller.RightJson(jsonId, null);
+            var response = await controller.RightJson(jsonId, null);
             // Assert
-            Assert.AreEqual(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOf<BadRequestResult>(response);
         }
 
         [Test]
-        public void Should_Get_Accepted_Request_When_Both_Side_Are_Stored_Correctly()
+        public async Task Should_Get_Accepted_Request_When_Both_Side_Are_Stored_Correctly()
         {
             // Arrange
             var controller = DiffController(new Json() { Id = 1, Left = leftSideJsonEncoded, Right = rightSideJsonEncoded, JsonId = jsonId });
             // Act
-            var response = controller.Diff(jsonId);
+            var response = await controller.Diff(jsonId);
             // Assert
-            Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<JsonResult>>(response);
         }
 
         [Test]
-        public void Should_Get_Accepted_Request_When_Json_Side_Are_Differently()
+        public async Task Should_Get_Accepted_Request_When_Json_Side_Are_Differently()
         {
             // Arrange
             var controller = DiffController(new Json() { Id = 1, Left = leftSideJsonEncoded, Right = rightSideJsonEncoded, JsonId = jsonId });
             // Act
-            var response = controller.Diff(jsonId);
+            var response = await controller.Diff(jsonId);
             // Assert
-            Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<JsonResult>>(response);
         }
 
         [Test]
         [TestCase("")]
         [TestCase(null)]
         [TestCase(" ")]
-        public void Should_Get_Bad_Request_When_Id_Is_Invalid(string id)
+        public async Task Should_Get_Bad_Request_When_Id_Is_Invalid(string id)
         {
             // Arrange
             var controller = DiffController(new Json());
             // Act
-            var response = controller.Diff(id);
+            var response = (BadRequestErrorMessageResult) await controller.Diff(id);
             // Assert
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.IsInstanceOf<BadRequestErrorMessageResult>(response);
+            Assert.AreEqual("Id should not be empty or null.", response.Message);
         }
 
         protected DiffController DiffController(Json json)
@@ -148,7 +155,7 @@ namespace JsonDiff.Tests.Controllers
             Mock<IRepository> mockRepository = new Mock<IRepository>();
             mockRepository.Setup(x => x.GetById(jsonId)).Returns(json);
             mockRepository.Setup(x => x.AddOrUpdate(It.IsAny<Json>()));
-            mockRepository.Setup(x => x.Save());
+            mockRepository.Setup(x => x.SaveAsync());
             DiffController controller = new DiffController(mockRepository.Object)
             {
                 Request = new HttpRequestMessage(),

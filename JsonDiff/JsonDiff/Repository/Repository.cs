@@ -2,38 +2,49 @@
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using System.Threading.Tasks;
 using JsonDiff.Models;
 
 namespace JsonDiff.Repository
 {
+    /// <summary>
+    /// JSON Repository
+    /// </summary>
     public class Repository : IRepository
     {
-        private DatabaseContext db;
-        private readonly DbSet<Json> dbSet;
+        private readonly DatabaseContext _db;
+        private readonly DbSet<Json> _dbSet;
 
+        /// <summary>
+        /// JSON Repository Contructor.
+        /// </summary>
         public Repository()
         {
-            db = new DatabaseContext();
-            dbSet = db.Set<Json>();
+            _db = new DatabaseContext();
+            _dbSet = _db.Set<Json>();
         }
 
+        /// <summary>
+        /// Get JSON by identifier.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Json GetById(string id)
         {
-            var result = db.Json.FirstOrDefault(x => x.JsonId == id);
-
-            if (result == null)
-            {
-                return new Json();
-            }
-
-            return result;
+            var result = _db.Json.FirstOrDefault(x => x.JsonId == id);
+            return result ?? new Json();
         }
 
+        /// <summary>
+        /// Add Or Update JSON asynchronously.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public bool AddOrUpdate(Json obj)
         {
             try
             {
-                dbSet.AddOrUpdate(obj);
+                _dbSet.AddOrUpdate(obj);
                 return true;
             }
             catch (Exception)
@@ -42,7 +53,14 @@ namespace JsonDiff.Repository
             }
         }
 
-        public void SaveJson(string id, string json, Side side)
+        /// <summary>
+        /// Save JSON asynchronously.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="json"></param>
+        /// <param name="side"></param>
+        /// <returns></returns>
+        public async Task SaveJsonAsync(string id, string json, Side side)
         {
             var jsonById = GetById(id);
 
@@ -54,29 +72,21 @@ namespace JsonDiff.Repository
             {
                 jsonById.Right = json;
             }
-            
+
             jsonById.JsonId = id;
 
             AddOrUpdate(jsonById);
-            Save();
+
+            await SaveAsync();
         }
 
-        public void Save()
+        /// <summary>
+        /// Perform dbset saving state asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (this.db != null)
-                {
-                    this.db.Dispose();
-                    this.db = null;
-                }
-            }
-        }
-
-
     }
 }

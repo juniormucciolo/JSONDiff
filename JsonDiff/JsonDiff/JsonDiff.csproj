@@ -181,6 +181,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\JsonResult.cs" />
     <Compile Include="Models\Json.cs" />
+    <Compile Include="Models\ResponseBase.cs" />
     <Compile Include="Models\SideEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\IRepository.cs" />

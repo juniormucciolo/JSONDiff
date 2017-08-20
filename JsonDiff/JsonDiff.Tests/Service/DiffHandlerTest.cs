@@ -32,8 +32,8 @@ namespace JsonDiff.Tests.Service
 
             // Assert
             Assert.AreEqual(jsonId, result.id);
-            Assert.AreEqual("Found 0 differences between jsons", result.message);
-            Assert.AreEqual("Objects are same", result.differences.First());
+            Assert.AreEqual("Objects are same", result.message);
+            Assert.AreEqual(0, result.differences.Count());
         }
 
         [Test]
@@ -54,6 +54,7 @@ namespace JsonDiff.Tests.Service
             // Assert
             Assert.AreEqual(jsonId, result.id);
             Assert.AreEqual("Found 1 differences between jsons", result.message);
+            Assert.AreEqual(1, result.differences.Count());
             Assert.AreEqual("value from id property changed from 50 to 10", result.differences.First());
         }
 

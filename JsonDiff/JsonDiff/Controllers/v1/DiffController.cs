@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.WebPages;
 using JsonDiff.Models;
@@ -9,12 +10,15 @@ using JsonDiff.Service;
 
 namespace JsonDiff.Controllers.v1
 {
+    /// <summary>
+    /// Diff Controler.
+    /// </summary>
     [RoutePrefix("v1")]
     public class DiffController : ApiController
     {
-        private readonly IRepository repository;
-        private readonly EncodeHandler encoder;
-        private readonly DiffHandler diff;
+        private readonly IRepository _repository;
+        private readonly EncodeHandler _encoder;
+        private readonly DiffHandler _diff;
 
         /// <summary>
         /// Unit constructor.
@@ -22,9 +26,9 @@ namespace JsonDiff.Controllers.v1
         /// <param name="repository"></param>
         public DiffController(IRepository repository)
         {
-            this.repository = repository;
-            this.encoder = new EncodeHandler();
-            this.diff = new DiffHandler();
+            this._repository = repository;
+            this._encoder = new EncodeHandler();
+            this._diff = new DiffHandler();
         }
 
         /// <summary>
@@ -32,9 +36,9 @@ namespace JsonDiff.Controllers.v1
         /// </summary>
         public DiffController()
         {
-            this.repository = new Repository.Repository();
-            this.encoder = new EncodeHandler();
-            this.diff = new DiffHandler();
+            this._repository = new Repository.Repository();
+            this._encoder = new EncodeHandler();
+            this._diff = new DiffHandler();
         }
 
         /// <summary>
@@ -45,19 +49,19 @@ namespace JsonDiff.Controllers.v1
         /// <returns>HttpResponseMessage</returns>
         [Route("{id}/right")]
         [HttpPut]
-        public HttpResponseMessage RightJson(string id, [FromBody]string json)
+        public async Task<IHttpActionResult> RightJson(string id, [FromBody]string json)
         {
             try
             {
-                encoder.DeserializeJson(json);
-                repository.SaveJson(id, json, Side.Right);
+                _encoder.DeserializeJson(json);
+                await _repository.SaveJsonAsync(id, json, Side.Right);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, $"Error message: {e.Message}");
+                return BadRequest();
             }
 
-            return Request.CreateResponse(HttpStatusCode.Accepted, $"{Side.Right} json stored sucessfully.");
+            return Ok( new ResponseBase() { Message = $"{Side.Right} json stored sucessfully.", Success = true });
         }
 
         /// <summary>
@@ -68,19 +72,19 @@ namespace JsonDiff.Controllers.v1
         /// <returns>HttpResponseMessage</returns>
         [Route("{id}/left")]
         [HttpPut]
-        public HttpResponseMessage LeftJson(string id, [FromBody]string json)
+        public async Task<IHttpActionResult> LeftJson(string id, [FromBody]string json)
         {
             try
             {
-                encoder.DeserializeJson(json);
-                repository.SaveJson(id, json, Side.Left);
+                _encoder.DeserializeJson(json);
+                await _repository.SaveJsonAsync(id, json, Side.Left);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, $"Error message: {e.Message}");
+                return BadRequest();
             }
 
-            return Request.CreateResponse(HttpStatusCode.Accepted, $"{Side.Left} json stored sucessfully.");
+            return Ok(new ResponseBase() { Message = $"{Side.Left} json stored sucessfully.", Success = true });
         }
 
         /// <summary>
@@ -90,28 +94,28 @@ namespace JsonDiff.Controllers.v1
         /// <returns>JSON Response with differences found in two JSON previosly sent as right and left side.</returns>
         [Route("{id}")]
         [HttpGet]
-        public HttpResponseMessage Diff(string id)
+        public async Task<IHttpActionResult> Diff(string id)
         {
             if (id == null || id.Trim().IsEmpty())
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Error message: Id should not be empty or null");
+                return BadRequest("Id should not be empty or null.");
             }
 
-            var jsonById = repository.GetById(id);
-            
+            var jsonById = _repository.GetById(id);
+
             if (jsonById.Left == null || jsonById.Right == null)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Error message: Left and Right side are required to peform diff");
+                return BadRequest("Left and Right side are required to peform diff.");
             }
 
             try
             {
-                var response = diff.ProcessDiff(jsonById);
-                return Request.CreateResponse(HttpStatusCode.Accepted, response);
+                var response = _diff.ProcessDiff(jsonById);
+                return Ok(response);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, $"Error message: {e.Message}");
+                return BadRequest();
             }
         }
     }
