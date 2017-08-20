@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.WebPages;
@@ -13,7 +11,7 @@ namespace JsonDiff.Controllers.v1
     /// <summary>
     /// Diff Controler.
     /// </summary>
-    [RoutePrefix("v1")]
+    [RoutePrefix("v1/diff")]
     public class DiffController : ApiController
     {
         private readonly IRepository _repository;

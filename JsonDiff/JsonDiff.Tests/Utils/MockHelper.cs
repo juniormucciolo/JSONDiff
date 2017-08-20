@@ -10,6 +10,11 @@ namespace JsonDiff.Tests.Utils
 {
     public class MockHelper
     {
+        /// <summary>
+        /// Get an instance of DiffController and mock their dependencies using MOQ.
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public DiffController GetMockedDiffController(Json json)
         {
             string jsonId = "1";
@@ -26,6 +31,10 @@ namespace JsonDiff.Tests.Utils
             return controller;
         }
 
+        /// <summary>
+        /// Get a model with base64 encoded string on JSON sides.
+        /// </summary>
+        /// <returns></returns>
         public Json GetModelHelper()
         {
             return new Json

@@ -5,6 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace JsonDiff.Service
 {
+    /// <summary>
+    /// EncodeHandler is responsible to decode and deserialize JSON base64 string.
+    /// </summary>
     public class EncodeHandler
     {
         /// <summary>
