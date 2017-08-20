@@ -63,7 +63,7 @@ namespace JsonDiff.Repository
         /// <returns></returns>
         public async Task SaveJsonAsync(string id, string json, Side side)
         {
-            var jsonById = GetByIdAsync(id).Result;
+            var jsonById = await GetByIdAsync(id);
 
             if (side == Side.Left)
             {
