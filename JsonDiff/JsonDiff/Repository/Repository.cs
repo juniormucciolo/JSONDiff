@@ -29,9 +29,10 @@ namespace JsonDiff.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Json GetById(string id)
+        public async Task<Json> GetByIdAsync(string id)
         {
-            var result = _db.Json.FirstOrDefault(x => x.JsonId == id);
+            IQueryable<Json> query = _dbSet;
+            var result = await (query.FirstOrDefaultAsync(x => x.JsonId == id));
             return result ?? new Json();
         }
 
@@ -62,7 +63,7 @@ namespace JsonDiff.Repository
         /// <returns></returns>
         public async Task SaveJsonAsync(string id, string json, Side side)
         {
-            var jsonById = GetById(id);
+            var jsonById = GetByIdAsync(id).Result;
 
             if (side == Side.Left)
             {

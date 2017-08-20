@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Net;
-using System.Net.Http;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.WebPages;
@@ -26,9 +26,9 @@ namespace JsonDiff.Controllers.v1
         /// <param name="repository"></param>
         public DiffController(IRepository repository)
         {
-            this._repository = repository;
-            this._encoder = new EncodeHandler();
-            this._diff = new DiffHandler();
+            _repository = repository;
+            _encoder = new EncodeHandler();
+            _diff = new DiffHandler();
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace JsonDiff.Controllers.v1
         /// </summary>
         public DiffController()
         {
-            this._repository = new Repository.Repository();
-            this._encoder = new EncodeHandler();
-            this._diff = new DiffHandler();
+            _repository = new Repository.Repository();
+            _encoder = new EncodeHandler();
+            _diff = new DiffHandler();
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace JsonDiff.Controllers.v1
                 return BadRequest("Id should not be empty or null.");
             }
 
-            var jsonById = _repository.GetById(id);
+            var jsonById = await _repository.GetByIdAsync(id);
 
             if (jsonById.Left == null || jsonById.Right == null)
             {

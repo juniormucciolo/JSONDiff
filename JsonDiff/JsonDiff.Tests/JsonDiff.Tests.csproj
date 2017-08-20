@@ -99,11 +99,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integrations\EndToEndTest.cs" />
     <Compile Include="Repository\RepositoryTest.cs" />
     <Compile Include="Service\DiffHandlerTest.cs" />
     <Compile Include="Service\EncodeHandlerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\DiffControllerTest.cs" />
+    <Compile Include="Utils\MockHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using JsonDiff.Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace JsonDiff.Service
 {
+    /// <summary>
+    /// DiffHandler is responsible to perform differentiations between two JSON.
+    /// </summary>
     public class DiffHandler
     {
         /// <summary>

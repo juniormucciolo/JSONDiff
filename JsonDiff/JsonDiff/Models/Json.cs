@@ -2,6 +2,9 @@
 
 namespace JsonDiff.Models
 {
+    /// <summary>
+    /// Base model for code-first migrations.
+    /// </summary>
     public class Json
     {
         [Required]
